@@ -3,10 +3,10 @@ from app import db
 class Building(db.Model):
     __tablename__ = "buildings"
 
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(100), nullable=False)
-    description = db.Column(db.Text)
-    image_url = db.Column(db.String(255))
+    id: int = db.Column(db.Integer, primary_key=True)
+    name: str = db.Column(db.String(100), nullable=False)
+    description: str | None = db.Column(db.String(200))
+    image_url: str | None = db.Column(db.String(255))
 
     # Relationships
     lecturers = db.relationship("Lecturer", backref="office_building", lazy=True)
