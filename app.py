@@ -24,7 +24,7 @@ def lecturers():
             "message": "Here is the list of all lecturers",
             "count": len(lect_list),
             "data": lect_list
-        })
+        }), 200
     except:
         db.session.rollback()
         return jsonify({"error": "Failed to fetch lecturers."}), 500
@@ -43,7 +43,7 @@ def getlect(id):
         return jsonify({
             "message": "Target Lecturer found",
             "data": lect
-        })
+        }), 200
     except:
         return jsonify({"error": "Error handling request"}), 500
 
@@ -99,7 +99,7 @@ def handlelect(id):
                 target.office_building_id = data.get("office_building_id")
 
             db.session.commit()
-            return jsonify({"message": "Lecturer updated successfully", "id": target.id})
+            return jsonify({"message": "Lecturer updated successfully", "id": target.id}), 200
         elif request.method == "DELETE":
             try:
                 db.session.delete(target)
