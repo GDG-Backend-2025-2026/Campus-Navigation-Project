@@ -1,7 +1,7 @@
 import os
 from flask import Flask
 from dotenv import load_dotenv
-from models import db # Import db from models
+from models import db 
 
 load_dotenv()
 
@@ -23,12 +23,8 @@ app.register_blueprint(dept_bp)
 with app.app_context():
     db.create_all()
 
-
-with app.app_context():
-    db.create_all()
-   
-
 if __name__ == '__main__':
     app.run(debug=True)
+
 
    
