@@ -62,6 +62,10 @@ def create_building():
     description = data.get("description")
     image_url = data.get("image_url")
     
+    # Prevents duplicate names
+    if Building.query.filter(Building.name == name) .first():
+        return jsonify({"error": "Building name or code already exists"}), 400
+    
     # Validate name (required)
     if not name:
         return jsonify({"error": "Building name is required"}), 400
