@@ -101,7 +101,14 @@ def update(id):
             
         dept.college_id = data['college_id']
 
-    db.session.commit()
+    try:
+        db.session.commit()
+    except IntegrityError:
+        db.session.rollback()
+        return jsonify({"error": "Update failed: Name or code already exists"}), 409
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"error": f"Database error: {str(e)}"}), 500
 
     return jsonify({
         "id": dept.id,
@@ -114,6 +121,14 @@ def update(id):
 @dept_bp.route('/departments/<int:id>', methods=['DELETE'])
 def delete(id):
     dept = Department.query.get_or_404(id)
-    db.session.delete(dept)
-    db.session.commit()
+    
+    try:
+        db.session.delete(dept)
+        db.session.commit()
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"error": f"Database error: {str(e)}"}), 500
+        
     return jsonify({"message": "Deleted"}), 200
+   
+
