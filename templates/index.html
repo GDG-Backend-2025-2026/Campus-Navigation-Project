@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Campus Navigation</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <div id="login-section">
+        <h2>Admin Login</h2>
+        <input type="text" id="username" placeholder="Username">
+        <input type="password" id="password" placeholder="Password">
+        <button onclick="login()">Login</button>
+        <div id="login-message"></div>
+    </div>
+    <div id="main-section" style="display:none;">
+        <h2>Buildings</h2>
+        <button onclick="fetchBuildings()">Refresh</button>
+        <ul id="building-list"></ul>
+        <input type="text" id="new-building" placeholder="New building name">
+        <button onclick="addBuilding()">Add Building</button>
+    </div>
+    <script src="/static/app.js"></script>
+</body>
+</html>

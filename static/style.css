@@ -1,0 +1,8 @@
+body { font-family: Arial, sans-serif; background: #f4f4f4; margin: 0; padding: 0; }
+#login-section, #main-section { background: #fff; max-width: 400px; margin: 40px auto; padding: 20px; border-radius: 8px; box-shadow: 0 2px 8px #ccc; }
+h2 { margin-top: 0; }
+input, button { margin: 8px 0; padding: 8px; width: 100%; box-sizing: border-box; }
+button { background: #007bff; color: #fff; border: none; border-radius: 4px; cursor: pointer; }
+button:hover { background: #0056b3; }
+#building-list { list-style: none; padding: 0; }
+#building-list li { padding: 6px 0; border-bottom: 1px solid #eee; }
