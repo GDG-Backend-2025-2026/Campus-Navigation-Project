@@ -1,5 +1,6 @@
 from flask import Blueprint, request, jsonify
-from models import db, Department, College 
+from models import db, Department, College
+from sqlalchemy.exc import IntegrityError
 
 dept_bp = Blueprint('dept_bp', __name__)
 
@@ -19,7 +20,11 @@ def get_one(id):
 # 3. CREATE (Strengthened Validation)
 @dept_bp.route('/departments', methods=['POST'])
 def create():
-    data = request.get_json()
+    # Use silent=True to avoid crashing on empty/bad JSON
+    data = request.get_json(silent=True)
+    if data is None:
+        return jsonify({"error": "Invalid or missing JSON data"}), 400
+    
     name = data.get('name')
     code = data.get('code')
     college_id = data.get('college_id')
@@ -32,14 +37,26 @@ def create():
     if Department.query.filter((Department.name == name) | (Department.code == code)).first():
         return jsonify({"error": "Department name or code already exists"}), 400
 
-    # 3. Validate college_id exists
+
+    # 3. Validate college_id (type check and existence)
+    if not isinstance(college_id, int):
+        return jsonify({"error": "college_id must be an integer"}), 400
+
     college = College.query.get(college_id)
     if not college:
         return jsonify({"error": "The college_id provided does not exist"}), 400
     
     new_dept = Department(name=name, code=code, college_id=college_id)
-    db.session.add(new_dept)
-    db.session.commit()
+    
+    try:
+        db.session.add(new_dept)
+        db.session.commit()
+    except IntegrityError:
+        db.session.rollback()
+        return jsonify({"error": "Department already exists"}), 409
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"error": f"Database error: {str(e)}"}), 500
 
     # RETURN the created department object
     return jsonify({
@@ -74,15 +91,18 @@ def update(id):
             return jsonify({"error": "Another department already has this code"}), 400
         dept.code = data['code']
 
-    # 3. Validate college_id if it's being updated
+   # 3. Validate college_id if it's being updated
     if 'college_id' in data:
+        if not isinstance(data['college_id'], int):
+            return jsonify({"error": "college_id must be an integer"}), 400
+        
         if not College.query.get(data['college_id']):
             return jsonify({"error": "Invalid college_id"}), 400
+            
         dept.college_id = data['college_id']
 
     db.session.commit()
 
-    # RETURN the updated department object
     return jsonify({
         "id": dept.id,
         "name": dept.name,
