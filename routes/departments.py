@@ -70,7 +70,11 @@ def create():
 @dept_bp.route('/departments/<int:id>', methods=['PUT'])
 def update(id):
     dept = Department.query.get_or_404(id)
-    data = request.get_json()
+    
+    # Use silent=True and check if data is None to prevent crashing
+    data = request.get_json(silent=True)
+    if data is None:
+        return jsonify({"error": "Invalid or missing JSON data"}), 400
     
     # 1. Validate name and code aren't being updated to empty values
     if 'name' in data and not data['name']:
@@ -131,4 +135,5 @@ def delete(id):
         
     return jsonify({"message": "Deleted"}), 200
    
+
 
