@@ -1,3 +1,12 @@
+# Environment
+.env
+instance/
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[codz]
@@ -20,12 +29,24 @@ parts/
 sdist/
 var/
 wheels/
+<<<<<<< HEAD
+pip-wheel-metadata/
+=======
+>>>>>>> 4fcb7498820c42aeb9a92f1e0e41a31597c627fd
 share/python-wheels/
 *.egg-info/
 .installed.cfg
 *.egg
 MANIFEST
 
+<<<<<<< HEAD
+# PostgreSQL
+dump.sql
+
+# IDE
+.vscode/
+.idea/
+=======
 # PyInstaller
 #  Usually these files are written by a python script from a template
 #  before PyInstaller builds the exe, so as to inject date/other infos into it.
@@ -207,3 +228,4 @@ marimo/_static/
 marimo/_lsp/
 __marimo__/
 
+>>>>>>> 4fcb7498820c42aeb9a92f1e0e41a31597c627fd
