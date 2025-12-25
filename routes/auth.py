@@ -17,7 +17,7 @@ def login():
     token = encode_auth_token(ADMIN_USER['username'])
     return jsonify({'token': token})
 @auth_bp.route('/signup', methods=['POST'])
-@jw
+@jwt_required
 def signup():
     data = request.get_json()
     if not data or data.get('username') :
