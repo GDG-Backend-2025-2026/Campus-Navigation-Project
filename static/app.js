@@ -53,5 +53,19 @@ function fetchBuildings() {
             });
         });
 }
-
-
+function addBuilding() {
+    const name = document.getElementById('new-building').value;
+    fetch('/buildings/', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + token
+        },
+        body: JSON.stringify({name})
+    })
+    .then(res => res.json())
+    .then(data => {
+        fetchBuildings();
+        document.getElementById('new-building').value = '';
+    });
+}
