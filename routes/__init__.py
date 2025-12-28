@@ -1,21 +1,18 @@
 # routes/__init__.py
 
 from .buildings import buildings_bp
-# from .colleges import colleges_bp
-# from .departments import departments_bp
-# from .lecturers import lecturers_bp
 from .routes import routes_bp
-from .route_card import route_card_bp
 from .auth import auth_bp
+from .system import system_bp
+from .sync import sync_bp
+
 
 def register_blueprints(app):
     """
-    Register all blueprints to the Flask app.
+    Register all blueprints to the Flask app under /api/v1.
     """
-    app.register_blueprint(buildings_bp)
-    # app.register_blueprint(colleges_bp)
-    # app.register_blueprint(departments_bp)
-    # app.register_blueprint(lecturers_bp)
-    app.register_blueprint(routes_bp)
-    app.register_blueprint(route_card_bp)
-    app.register_blueprint(auth_bp)
+    app.register_blueprint(buildings_bp, url_prefix='/api/v1/buildings')
+    app.register_blueprint(routes_bp, url_prefix='/api/v1/routes')
+    app.register_blueprint(auth_bp, url_prefix='/api/v1/auth')
+    app.register_blueprint(system_bp, url_prefix='/api/v1/system')
+    app.register_blueprint(sync_bp, url_prefix='/api/v1/sync')
