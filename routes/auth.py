@@ -13,9 +13,9 @@ ADMIN_USER = {'username': 'admin', 'password': 'admin123'}
 def login():
     data = request.get_json()
     if not data or data.get('username') != ADMIN_USER['username'] or data.get('password') != ADMIN_USER['password']:
-        return jsonify({'message': 'Invalid credentials'}), 401
+        return jsonify({'success': False, 'message': 'Invalid credentials'}), 401
     token = encode_auth_token(ADMIN_USER['username'])
-    return jsonify({'token': token})
+    return jsonify({'success': True, 'token': token})
 @auth_bp.route('/signup', methods=['POST'])
 @jwt_required
 def signup():
