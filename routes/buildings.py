@@ -9,35 +9,37 @@ buildings_bp = Blueprint('buildings', __name__, url_prefix='/buildings')
 def get_buildings():
     """Get all buildings."""
     buildings = Building.query.all()
-    return jsonify([{'id': b.id, 'name': b.name} for b in buildings])
+    return jsonify([{'id': b.id, 'name': b.name, 'description': b.description} for b in buildings])
 
-@buildings_bp.route('/<int:id>', methods=['GET'])
+@buildings_bp.route('/<int:id>/', methods=['GET'])
 def get_building(id):
     """Get a single building by ID."""
     building = Building.query.get_or_404(id)
-    return jsonify({'id': building.id, 'name': building.name})
+    return jsonify({'id': building.id, 'name': building.name, 'description': building.description})
 
 @buildings_bp.route('/', methods=['POST'])
 @jwt_required
 def create_building():
     """Create a new building (admin only)."""
     data = request.get_json()
-    building = Building(name=data['name'])
+    building = Building(name=data['name'], description=data.get('description'))
     db.session.add(building)
     db.session.commit()
-    return jsonify({'id': building.id, 'name': building.name}), 201
+    return jsonify({'id': building.id, 'name': building.name, 'description': building.description}), 201
 
-@buildings_bp.route('/<int:id>', methods=['PUT'])
+@buildings_bp.route('/<int:id>/', methods=['PUT'])
 @jwt_required
 def update_building(id):
     """Update a building (admin only)."""
     building = Building.query.get_or_404(id)
     data = request.get_json()
     building.name = data.get('name', building.name)
+    if 'description' in data:
+        building.description = data['description']
     db.session.commit()
-    return jsonify({'id': building.id, 'name': building.name})
+    return jsonify({'id': building.id, 'name': building.name, 'description': building.description})
 
-@buildings_bp.route('/<int:id>', methods=['DELETE'])
+@buildings_bp.route('/<int:id>/', methods=['DELETE'])
 @jwt_required
 def delete_building(id):
     """Delete a building (admin only)."""

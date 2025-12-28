@@ -9,7 +9,7 @@ auth_bp = Blueprint('auth', __name__, url_prefix='/auth')
 # Dummy user for demonstration
 ADMIN_USER = {'username': 'admin', 'password': 'admin123'}
 
-@auth_bp.route('/login', methods=['POST'])
+@auth_bp.route('/login/', methods=['POST'])
 def login():
     data = request.get_json()
     if not data or data.get('username') != ADMIN_USER['username'] or data.get('password') != ADMIN_USER['password']:
