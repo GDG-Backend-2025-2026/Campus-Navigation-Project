@@ -23,4 +23,8 @@ def create_app():
         admin
     )
 
+    # Register blueprints
+    from app.routes.offline_sync import offline_sync_bp
+    app.register_blueprint(offline_sync_bp)
+
     return app
