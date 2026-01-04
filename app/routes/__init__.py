@@ -1,1 +1,0 @@
-from .buildings import buildings_bp

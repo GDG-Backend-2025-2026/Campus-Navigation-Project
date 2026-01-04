@@ -11,13 +11,7 @@ config = context.config
 
 # Interpret the config file for Python logging.
 # This line sets up loggers basically.
-#This ensures that if for some reason the .ini file path isn’t available, logging still works without crashing.
-if config.config_file_name is not None:
-    fileConfig(config.config_file_name)
-else:
-    import sys
-    logging.basicConfig(stream=sys.stderr, level=logging.INFO)
-
+fileConfig(config.config_file_name)
 logger = logging.getLogger('alembic.env')
 
 

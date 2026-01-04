@@ -12,12 +12,6 @@ def create_app():
 
     db.init_app(app)
     migrate.init_app(app, db)
-    
-    
-    from app.routes import (
-        buildings
-        
-    )
 
     from app.models import (
         building,
@@ -28,6 +22,5 @@ def create_app():
         route_card,
         admin
     )
-   
-   
+
     return app
