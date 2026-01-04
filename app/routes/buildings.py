@@ -1,8 +1,9 @@
 # routes/building.py
 from flask import Blueprint, request, jsonify
 from app.models.building import Building
-from app import db
+from utils.db import db
 from sqlalchemy.exc import SQLAlchemyError
+from utils.auth import jwt_required
 
 buildings_bp = Blueprint("buildings", __name__, url_prefix="/buildings")
 
@@ -50,6 +51,7 @@ def get_building(building_id):
 
 # CREATE a new building
 @buildings_bp.route("/", methods=["POST"])
+@jwt_required
 def create_building():
     data = request.get_json()
     
@@ -61,21 +63,23 @@ def create_building():
     name = data.get("name")
     description = data.get("description")
     image_url = data.get("image_url")
-    
-    # Prevents duplicate names
-    if Building.query.filter(Building.name == name) .first():
-        return jsonify({"error": "Building name or code already exists"}), 400
-    
+   
     # Validate name (required)
     if not name:
         return jsonify({"error": "Building name is required"}), 400
-    
+         
     # Additional validation rules
     if not isinstance(name, str) or len(name.strip()) == 0:
         return jsonify({"error": "Name must be a non-empty string"}), 400
     
     if len(name.strip()) > 100:  # length constraint
         return jsonify({"error": "Name cannot exceed 100 characters"}), 400
+    
+   # Check for duplicates
+    if Building.query.filter_by(name=name).first():
+         return jsonify({"error": "Building name already exists"}), 400
+    
+    
     
     # field validations
     if description and (not isinstance(description, str) or len(description) > 500):
@@ -113,6 +117,7 @@ def create_building():
 
 # UPDATE building by ID
 @buildings_bp.route("/<int:building_id>", methods=["PUT"])
+@jwt_required
 def update_building(building_id):
     # Check if building exists first
     building = Building.query.get(building_id)
@@ -174,6 +179,7 @@ def update_building(building_id):
 
 # DELETE building by ID
 @buildings_bp.route("/<int:building_id>", methods=["DELETE"])
+@jwt_required
 def delete_building(building_id):
     building = Building.query.get(building_id)
     if not building:
