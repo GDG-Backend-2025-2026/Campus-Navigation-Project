@@ -2,7 +2,7 @@
 from flask import Blueprint, request, jsonify
 from app.models.building import Building
 from utils.db import db
-from sqlalchemy.exc import SQLAlchemyError
+from sqlalchemy.exc import SQLAlchemyError, IntegrityError
 from utils.auth import jwt_required
 
 buildings_bp = Blueprint("buildings", __name__, url_prefix="/buildings")
@@ -51,11 +51,11 @@ def get_building(building_id):
 
 # CREATE a new building
 @buildings_bp.route("/", methods=["POST"])
-@jwt_required
+@jwt_required()
 def create_building():
     data = request.get_json()
     
-    # Input validation 
+    # Input validation
     if not data:
         return jsonify({"error": "Request body must be JSON"}), 400
     
@@ -63,25 +63,25 @@ def create_building():
     name = data.get("name")
     description = data.get("description")
     image_url = data.get("image_url")
-   
+    
     # Validate name (required)
     if not name:
         return jsonify({"error": "Building name is required"}), 400
-         
-    # Additional validation rules
+    
     if not isinstance(name, str) or len(name.strip()) == 0:
         return jsonify({"error": "Name must be a non-empty string"}), 400
     
-    if len(name.strip()) > 100:  # length constraint
+    if len(name.strip()) > 100:
         return jsonify({"error": "Name cannot exceed 100 characters"}), 400
     
-   # Check for duplicates
-    if Building.query.filter_by(name=name).first():
-         return jsonify({"error": "Building name already exists"}), 400
+    # Normalize name for duplicate check
+    normalized_name = name.strip().lower()
     
+    # Pre-check for duplicates (helps UX, but DB constraint is the real safeguard)
+    if Building.query.filter_by(name=normalized_name).first():
+        return jsonify({"error": "Building name already exists"}), 409
     
-    
-    # field validations
+    # Field validations
     if description and (not isinstance(description, str) or len(description) > 500):
         return jsonify({"error": "Description must be a string under 500 characters"}), 400
     
@@ -91,10 +91,10 @@ def create_building():
     # Database operation with error handling
     try:
         new_building = Building(
-            name=name.strip(),   # type: ignore
-            description=description.strip() if description else None,  # type: ignore
-            image_url=image_url.strip() if image_url else None   # type: ignore
-        ) # type: ignore
+            name=normalized_name,  # normalized for consistency
+            description=description.strip() if description else None,
+            image_url=image_url.strip() if image_url else None
+        )
         db.session.add(new_building)
         db.session.commit()
         
@@ -108,16 +108,19 @@ def create_building():
                 "image_url": new_building.image_url
             }
         }), 201
-        
+    
+    except IntegrityError:
+        db.session.rollback()
+        return jsonify({"error": "Building name already exists"}), 409
+    
     except SQLAlchemyError as e:
-        db.session.rollback()  # Critical: rollback on failure
-        # Log the actual error for debugging (in production, use logging module)
+        db.session.rollback()
         # logging.error(f"Database error in create_building: {str(e)}")
         return jsonify({"error": "Database error occurred while creating building"}), 500
 
 # UPDATE building by ID
 @buildings_bp.route("/<int:building_id>", methods=["PUT"])
-@jwt_required
+@jwt_required()
 def update_building(building_id):
     # Check if building exists first
     building = Building.query.get(building_id)
@@ -179,7 +182,7 @@ def update_building(building_id):
 
 # DELETE building by ID
 @buildings_bp.route("/<int:building_id>", methods=["DELETE"])
-@jwt_required
+@jwt_required()
 def delete_building(building_id):
     building = Building.query.get(building_id)
     if not building:
