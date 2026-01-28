@@ -49,13 +49,7 @@ pip install -r requirements.txt
 
 Create a `.env` file in the root.
 
-Example
-
-```ini
-FLASK_ENV=development
-SECRET_KEY=your-secret-key
-DATABASE_URL=postgresql://user:password@host:port/dbname
-JWT_SECRET=your-jwt-secret
+copy contents of env.example to .env
 ```
 
 ## 5. Initialize the database
