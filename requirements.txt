@@ -1,0 +1,22 @@
+# Flask and extensions
+Flask==3.1.2
+Flask-Cors==6.0.1
+Flask-JWT-Extended==4.7.1
+Flask-Migrate==4.1.0
+Flask-SQLAlchemy==3.1.1
+flasgger==0.9.7.1
+
+# Database
+psycopg2-binary==2.9.11
+SQLAlchemy==2.0.45
+
+# Supabase
+supabase==2.26.0
+
+# External services
+cloudinary==1.36.0
+twilio==9.7.2
+
+# Environment & utilities
+python-dotenv==1.2.1
+gunicorn==23.0.0
