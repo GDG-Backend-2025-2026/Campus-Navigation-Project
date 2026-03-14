@@ -73,7 +73,7 @@ If using raw SQL, run your schema file manually.
 ## 6. Start the development server
 
 ```bash
-python app.py
+python wsgi.py
 ```
 
 Server will be available on

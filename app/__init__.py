@@ -1,5 +1,6 @@
 from flask import Flask
 from flask_migrate import Migrate
+from flask_cors import CORS
 from flasgger import Swagger
 from config import Config
 from utils.db import db  # Use the SAME db instance as routes/models
@@ -14,6 +15,7 @@ def create_app():
 
     db.init_app(app)
     migrate.init_app(app, db)
+    CORS(app)  # Allow CORS for all origins
     
     # Initialize Swagger
     Swagger(app, template=swagger_template, config=swagger_config)
